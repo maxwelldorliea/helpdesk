@@ -5,6 +5,8 @@ import { useUserStore } from "@/stores/user";
 import { useScreenSize } from "@/composables/screen";
 const { isMobileView } = useScreenSize();
 
+export const AGENT_PORTAL_DASHBOARD = "Dashboard";
+
 export const CUSTOMER_PORTAL_NEW_TICKET = "TicketNew";
 export const CUSTOMER_PORTAL_TICKET = "TicketCustomer";
 
@@ -121,6 +123,11 @@ const routes = [
       admin: false,
     },
     children: [
+      {
+        path: "dashboard",
+        name: AGENT_PORTAL_DASHBOARD,
+        component: () => import("@/pages/Dash.vue"),
+      },
       {
         path: "tickets",
         name: AGENT_PORTAL_TICKET_LIST,
