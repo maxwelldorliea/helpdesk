@@ -1,20 +1,12 @@
 <template>
-  <div
-    class="z-0 flex select-none flex-col border-r border-gray-200 bg-gray-50 p-2 text-base duration-300 ease-in-out"
+  <div class="z-0 flex select-none flex-col border-r border-gray-200 bg-gray-50 p-2 text-base duration-300 ease-in-out"
     :style="{
       'min-width': width,
       'max-width': width,
-    }"
-  >
+    }">
     <UserMenu class="mb-2 ml-0.5" :options="profileSettings" />
-    <SidebarLink
-      v-if="!isCustomerPortal"
-      label="Search"
-      class="mb-1"
-      :icon="LucideSearch"
-      :on-click="() => openCommandPalette()"
-      :is-expanded="isExpanded"
-    >
+    <SidebarLink v-if="!isCustomerPortal" label="Search" class="mb-1" :icon="LucideSearch"
+      :on-click="() => openCommandPalette()" :is-expanded="isExpanded">
       <template #right>
         <span class="flex items-center gap-0.5 font-medium text-gray-600">
           <component :is="device.modifierIcon" class="h-3 w-3" />
@@ -23,46 +15,25 @@
       </template>
     </SidebarLink>
     <div class="mb-4" v-if="!isCustomerPortal">
-      <div
-        v-if="notificationStore.unread"
-        class="absolute z-20 h-1.5 w-1.5 translate-x-6 translate-y-1 rounded-full bg-blue-400 left-1"
-        theme="gray"
-        variant="solid"
-      />
-      <SidebarLink
-        class="relative"
-        label="Notifications"
-        :icon="LucideBell"
-        :on-click="() => notificationStore.toggle()"
-        :is-expanded="isExpanded"
-      >
+      <div v-if="notificationStore.unread"
+        class="absolute z-20 h-1.5 w-1.5 translate-x-6 translate-y-1 rounded-full bg-blue-400 left-1" theme="gray"
+        variant="solid" />
+      <SidebarLink class="relative" label="Notifications" :icon="LucideBell"
+        :on-click="() => notificationStore.toggle()" :is-expanded="isExpanded">
         <template #right>
-          <Badge
-            v-if="isExpanded && notificationStore.unread"
-            :label="notificationStore.unread"
-            theme="gray"
-            variant="subtle"
-          />
+          <Badge v-if="isExpanded && notificationStore.unread" :label="notificationStore.unread" theme="gray"
+            variant="subtle" />
         </template>
       </SidebarLink>
     </div>
     <div class="mb-4 flex flex-col gap-1">
-      <SidebarLink
-        v-for="option in menuOptions"
-        v-bind="option"
-        :key="option.label"
-        :is-expanded="isExpanded"
-        :is-active="isActiveTab(option.to)"
-      />
+      <SidebarLink v-for="option in menuOptions" v-bind="option" :key="option.label" :is-expanded="isExpanded"
+        :is-active="isActiveTab(option.to)" />
     </div>
     <div class="grow" />
-    <SidebarLink
-      :icon="isExpanded ? LucideArrowLeftFromLine : LucideArrowRightFromLine"
-      :is-active="false"
-      :is-expanded="isExpanded"
-      :label="isExpanded ? 'Collapse' : 'Expand'"
-      :on-click="() => (isExpanded = !isExpanded)"
-    />
+    <SidebarLink :icon="isExpanded ? LucideArrowLeftFromLine : LucideArrowRightFromLine" :is-active="false"
+      :is-expanded="isExpanded" :label="isExpanded ? 'Collapse' : 'Expand'"
+      :on-click="() => (isExpanded = !isExpanded)" />
     <SettingsModal v-if="authStore.isAdmin" v-model="showSettingsModal" />
   </div>
 </template>
@@ -114,9 +85,6 @@ const customerPortalDropdown = computed(() => [
 
 const agentPortalDropdown = computed(() => [
   {
-    component: markRaw(Apps),
-  },
-  {
     label: "Customer portal",
     icon: "users",
     onClick: () => {
@@ -127,12 +95,7 @@ const agentPortalDropdown = computed(() => [
   {
     icon: "life-buoy",
     label: "Support",
-    onClick: () => window.open("https://t.me/frappedesk"),
-  },
-  {
-    icon: "book-open",
-    label: "Docs",
-    onClick: () => window.open("https://docs.frappe.io/helpdesk"),
+    onClick: () => window.open("https://kwagei.com#footer"),
   },
   {
     label: "Settings",

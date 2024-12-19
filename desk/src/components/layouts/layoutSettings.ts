@@ -3,6 +3,7 @@ import LucideCloudLightning from "~icons/lucide/cloud-lightning";
 import LucideContact2 from "~icons/lucide/contact-2";
 import LucideTicket from "~icons/lucide/ticket";
 import LucideUser from "~icons/lucide/user";
+import LucideLayoutGrid from "~icons/lucide/layout-grid";
 import { OrganizationsIcon } from "../icons";
 import LucideUsers from "~icons/lucide/users";
 import {
@@ -11,9 +12,15 @@ import {
   AGENT_PORTAL_CUSTOMER_LIST,
   AGENT_PORTAL_TEAM_LIST,
   AGENT_PORTAL_TICKET_LIST,
+  AGENT_PORTAL_DASHBOARD,
 } from "@/router";
 
 export const agentPortalSidebarOptions = [
+  {
+    label: "Dashboard",
+    icon: LucideLayoutGrid,
+    to: AGENT_PORTAL_DASHBOARD,
+  },
   {
     label: "Tickets",
     icon: LucideTicket,
