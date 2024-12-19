@@ -27,26 +27,6 @@ export const agentPortalSidebarOptions = [
     to: AGENT_PORTAL_TICKET_LIST,
   },
   {
-    label: "Agents",
-    icon: LucideUser,
-    to: AGENT_PORTAL_AGENT_LIST,
-  },
-  {
-    label: "Knowledge base",
-    icon: LucideBookOpen,
-    to: "DeskKBHome",
-  },
-  {
-    label: "Teams",
-    icon: LucideUsers,
-    to: AGENT_PORTAL_TEAM_LIST,
-  },
-  {
-    label: "Canned responses",
-    icon: LucideCloudLightning,
-    to: "CannedResponses",
-  },
-  {
     label: "Customers",
     icon: OrganizationsIcon,
     to: AGENT_PORTAL_CUSTOMER_LIST,
@@ -55,6 +35,26 @@ export const agentPortalSidebarOptions = [
     label: "Contacts",
     icon: LucideContact2,
     to: AGENT_PORTAL_CONTACT_LIST,
+  },
+  {
+    label: "Agents",
+    icon: LucideUser,
+    to: AGENT_PORTAL_AGENT_LIST,
+  },
+  {
+    label: "Teams",
+    icon: LucideUsers,
+    to: AGENT_PORTAL_TEAM_LIST,
+  },
+  {
+    label: "Knowledge base",
+    icon: LucideBookOpen,
+    to: "DeskKBHome",
+  },
+  {
+    label: "Canned responses",
+    icon: LucideCloudLightning,
+    to: "CannedResponses",
   },
 ];
 
