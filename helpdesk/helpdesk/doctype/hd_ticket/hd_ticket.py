@@ -161,6 +161,16 @@ class HDTicket(Document):
         capture_event("ticket_updated")
 
     def autoname(self):
+        today = frappe.utils.now_datetime()
+        date = today.strftime("%y%m%d")
+        curr_count = frappe.db\
+        .get_single_value("HD Settings", fieldname="current_count")
+        padding = "0" * (4 - len(str(curr_count)))
+        count = f"{padding}{curr_count}"
+        self.name = f"OM-{date}-{count}"
+        frappe.db\
+        .set_single_value("HD Settings", fieldname="current_count",
+                          value=curr_count + 1)
         return self.name
 
     def get_feed(self):
@@ -193,6 +203,12 @@ class HDTicket(Document):
         publish_event("helpdesk:new-ticket", {"name": self.name})
         if self.get("description"):
             self.create_communication_via_contact(self.description)
+        msg = f"""
+        Hi, thank for reaching out to our Support Team! Please note that your support ticket has been
+        created. Here is the ticket id: {self.name}
+        """
+        auto_reply_user = frappe.db.get_single_value("HD Settings", fieldname="auto_reply_user")
+        self.reply_via_agent(msg, sender=auto_reply_user)
 
     def on_update(self):
         # flake8: noqa
@@ -518,11 +534,11 @@ class HDTicket(Document):
         cc: str = None,
         bcc: str = None,
         attachments: List[str] = [],
+        sender = None
     ):
         skip_email_workflow = self.skip_email_workflow()
         medium = "" if skip_email_workflow else "Email"
         subject = f"Re: {self.subject} (#{self.name})"
-        sender = frappe.session.user
         recipients = to or self.raised_by
         sender_email = None if skip_email_workflow else self.sender_email()
         last_communication = self.get_last_communication()
@@ -530,6 +546,9 @@ class HDTicket(Document):
         if last_communication:
             cc = cc or last_communication.cc
             bcc = bcc or last_communication.bcc
+
+        if not sender:
+            sender = frappe.session.user
 
         if recipients == "Administrator":
             admin_email = frappe.get_value("User", "Administrator", "email")

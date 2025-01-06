@@ -51,7 +51,11 @@
   "subject_weight",
   "column_break_qoxt",
   "description_weight",
-  "headings_weight"
+  "headings_weight",
+  "config",
+  "config_section",
+  "auto_reply_user",
+  "current_count"
  ],
  "fields": [
   {
@@ -309,11 +313,37 @@
    "fieldname": "is_feedback_mandatory",
    "fieldtype": "Check",
    "label": "Make feedback mandatory"
+  },
+  {
+   "fieldname": "config_section",
+   "fieldtype": "Section Break",
+   "label": "Config"
+  },
+  {
+   "fieldname": "auto_reply_user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Auto Reply User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "current_count",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Current Count",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "config",
+   "fieldtype": "Tab Break",
+   "label": "Config"
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2024-12-10 14:46:08.764944",
+ "modified": "2025-01-06 15:55:03.174208",
  "modified_by": "Administrator",
  "module": "Helpdesk",
  "name": "HD Settings",

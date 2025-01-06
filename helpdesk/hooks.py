@@ -27,6 +27,9 @@ after_migrate = [
 scheduler_events = {
     "all": ["helpdesk.search.build_index_if_not_exists"],
     "hourly": ["helpdesk.search.download_corpus"],
+    "cron": {
+    "0 0 * * *": ["helpdesk.cron.reset_ticket_name_count"],
+    }
 }
 
 
