@@ -203,9 +203,11 @@ class HDTicket(Document):
         publish_event("helpdesk:new-ticket", {"name": self.name})
         if self.get("description"):
             self.create_communication_via_contact(self.description)
+        name: str = self.contact if self.contact else self.raised_by
+        if "@" in name:
+            name = name.split("@")[0]
         msg = f"""
-        Hi, thank for reaching out to our Support Team! Please note that your support ticket has been
-        created. Here is the ticket id: {self.name}
+        Hi {name}, thanks for reaching out! Your support ticket ({self.name}) has been created. We'll get back to you soon.
         """
         auto_reply_user = frappe.db.get_single_value("HD Settings", fieldname="auto_reply_user")
         self.reply_via_agent(msg, sender=auto_reply_user)
