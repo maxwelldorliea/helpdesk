@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+from pypika.terms import Criterion
+from pypika.queries import Query
 
 
 class HDAgent(Document):
@@ -74,3 +76,29 @@ def create_hd_agent(first_name, last_name, email, signature, team):
     return frappe.get_doc(
         {"doctype": "HD Agent", "user": user.name, "group": team}
     ).insert()
+
+
+    @staticmethod
+    def get_list_filters(query: Query):
+        QBTeam = frappe.qb.DocType("HD Team")
+        QBTeamMember = frappe.qb.DocType("HD Team Member")
+        QBAgent = frappe.qb.DocType("HD Agent")
+        user = frappe.session.user
+        teams = (
+            frappe.qb.from_(QBTeamMember)
+            .where(QBTeamMember.user == user)
+            .join(QBTeam)
+            .on(QBTeam.name == QBTeamMember.parent)
+            .select(QBTeam.user, QBTeam.team_name, QBTeam.ignore_restrictions)
+            .run(as_dict=True)
+        )
+        can_ignore_restrictions = (
+            len(list(filter(lambda x: x.ignore_restrictions, teams))) > 0
+        )
+
+        if can_ignore_restrictions:
+            return query
+
+        conditions = [QBAgent.name == team.user for team in teams]
+        query =  query.where(Criterion.any(conditions))
+        return query

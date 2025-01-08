@@ -5,53 +5,30 @@
         <div class="text-lg font-medium text-gray-900">Teams</div>
       </template>
       <template #right-header>
-        <Button
-          label="New team"
-          theme="gray"
-          variant="solid"
-          @click="showNewDialog = !showNewDialog"
-          iconLeft="plus"
-        />
+        <Button label="New team" theme="gray" variant="solid" @click="showNewDialog = !showNewDialog" iconLeft="plus" ,
+          v-if="isManager" />
       </template>
     </LayoutHeader>
-    <ListViewBuilder
-      :options="{
-        doctype: 'HD Team',
-        emptyState: {
-          title: emptyMessage,
-        },
-      }"
-      @row-click="handleRowClick"
-      @empty-state-action="showNewDialog = true"
-    />
-    <Dialog
-      v-model="showNewDialog"
-      :options="{
-        title: 'New team',
-      }"
-    >
+    <ListViewBuilder :options="{
+      doctype: 'HD Team',
+      emptyState: {
+        title: emptyMessage,
+      },
+    }" @row-click="handleRowClick" @empty-state-action="showNewDialog = true" />
+    <Dialog v-model="showNewDialog" :options="{
+      title: 'New team',
+    }">
       <template #body-content>
         <form class="space-y-2" @submit.prevent="newTeam.submit">
-          <FormControl
-            v-model="newTeamTitle"
-            label="Title"
-            placeholder="Product experts"
-            type="text"
-          />
-          <Button
-            :disabled="isEmpty(newTeamTitle)"
-            class="w-full"
-            label="Create"
-            theme="gray"
-            variant="solid"
-          />
+          <FormControl v-model="newTeamTitle" label="Title" placeholder="Product experts" type="text" />
+          <Button :disabled="isEmpty(newTeamTitle)" class="w-full" label="Create" theme="gray" variant="solid" />
         </form>
       </template>
     </Dialog>
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { createResource, usePageMeta, Dialog, FormControl } from "frappe-ui";
 import { isEmpty } from "lodash";
@@ -59,6 +36,13 @@ import LayoutHeader from "@/components/LayoutHeader.vue";
 import ListViewBuilder from "@/components/ListViewBuilder.vue";
 import { AGENT_PORTAL_TEAM_SINGLE } from "@/router";
 import { useError } from "@/composables/error";
+import { useUserStore } from "@/stores/user";
+const { getUser } = useUserStore();
+
+const isManager = computed(() => {
+  const roles = getUser()["roles"]
+  return roles.includes("Support Manager") || roles.includes("Administrator")
+});
 
 const router = useRouter();
 const showNewDialog = ref(false);

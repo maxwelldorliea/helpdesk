@@ -7,6 +7,8 @@ from frappe.core.doctype.version.version import get_diff
 from frappe.exceptions import DoesNotExistError
 from frappe.model.document import Document
 from frappe.model.naming import append_number_if_name_exists
+from pypika.queries import Query
+from pypika.terms import Criterion
 
 
 class HDTeam(Document):
@@ -193,3 +195,29 @@ class HDTeam(Document):
             "creation",
         ]
         return {"columns": columns, "rows": rows}
+
+    @staticmethod
+    def get_list_filters(query: Query):
+        QBTeam = frappe.qb.DocType("HD Team")
+        QBTeamMember = frappe.qb.DocType("HD Team Member")
+        user = frappe.session.user
+        teams = (
+            frappe.qb.from_(QBTeamMember)
+            .where(QBTeamMember.user == user)
+            .join(QBTeam)
+            .on(QBTeam.name == QBTeamMember.parent)
+            .select(QBTeam.team_name, QBTeam.ignore_restrictions)
+            .run(as_dict=True)
+        )
+        can_ignore_restrictions = (
+            len(list(filter(lambda x: x.ignore_restrictions, teams))) > 0
+        )
+
+        if can_ignore_restrictions:
+            return query
+
+        conditions = [QBTeam.name == team.team_name for team in teams]
+
+
+        query = query.where(Criterion.any(conditions))
+        return query

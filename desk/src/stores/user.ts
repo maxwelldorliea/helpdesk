@@ -37,7 +37,7 @@ export const useUserStore = defineStore("user", () => {
         email: email,
         full_name: email.split("@")[0],
         user_image: null,
-        role: null,
+        roles: auth.roles,
       };
     }
     return usersByName[email];

@@ -16,5 +16,7 @@ def get_users():
     for user in users:
         if frappe.session.user == user.name:
             user.session_user = True
+        user["roles"] = frappe.get_roles(user.email)
+
 
     return users

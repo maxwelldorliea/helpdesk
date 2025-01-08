@@ -43,6 +43,7 @@ declare module "vue-router" {
     auth?: boolean;
     agent?: boolean;
     admin?: boolean;
+    roles?: string[];
     public?: boolean;
     onSuccessRoute?: string;
     parent?: string;
@@ -146,6 +147,7 @@ const routes = [
         meta: {
           onSuccessRoute: "TicketAgent",
           parent: "TicketsAgent",
+          roles: ["Administrator", "Support Manager"],
         },
       },
       {
@@ -241,10 +243,17 @@ export const router = createRouter({
 router.beforeEach(async (to, _, next) => {
   const authStore = useAuthStore();
   const userStore = useUserStore();
+  const { getUser } = useUserStore();
 
   if (authStore.isLoggedIn) {
     await authStore.init();
     await userStore.users.fetch();
+  }
+
+  const roles: string[] = getUser("sessionUser")["roles"];
+
+  if (to.meta.roles && !to.meta.roles.some((role) => roles.includes(role))) {
+    return next("/")
   }
 
   if (!authStore.isLoggedIn) {

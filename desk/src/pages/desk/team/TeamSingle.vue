@@ -3,22 +3,20 @@
     <div class="flex flex-col">
       <LayoutHeader>
         <template #left-header>
-          <Breadcrumbs
-            :items="[
-              {
-                label: 'Teams',
-                route: {
-                  name: AGENT_PORTAL_TEAM_LIST,
-                },
+          <Breadcrumbs :items="[
+            {
+              label: 'Teams',
+              route: {
+                name: AGENT_PORTAL_TEAM_LIST,
               },
-              {
-                label: teamId,
-                route: {
-                  name: AGENT_PORTAL_TEAM_SINGLE,
-                },
+            },
+            {
+              label: teamId,
+              route: {
+                name: AGENT_PORTAL_TEAM_SINGLE,
               },
-            ]"
-          />
+            },
+          ]" />
         </template>
         <template #right-header>
           <div class="flex items-center gap-2">
@@ -29,12 +27,7 @@
                 </template>
               </Button>
             </Dropdown>
-            <Button
-              label="Add member"
-              theme="gray"
-              variant="solid"
-              @click="showAddMember = !showAddMember"
-            >
+            <Button label="Add member" theme="gray" variant="solid" @click="showAddMember = !showAddMember">
               <template #prefix>
                 <IconPlus class="h-4 w-4" />
               </template>
@@ -47,24 +40,15 @@
           <div class="space-y-4">
             <div class="text-lg font-medium">Members</div>
             <div v-if="!isEmpty(team.doc?.users)" class="flex flex-wrap gap-2">
-              <Pill
-                v-for="member in team.doc?.users"
-                :key="member.user"
-                :label="member.user"
-                :disabled="team.loading"
-                @click="(user) => removeMember(user)"
-              />
+              <Pill v-for="member in team.doc?.users" :key="member.user" :label="member.user" :disabled="team.loading"
+                @click="(user) => removeMember(user)" />
             </div>
             <div v-else class="text-base text-gray-900">
               No members found in team: {{ teamId }}
             </div>
-            <Switch
-              v-model="ignoreRestrictions"
-              size="md"
-              label="Bypass restrictions"
+            <Switch v-if="isManager" v-model="ignoreRestrictions" size="md" label="Bypass restrictions"
               description="Members of this team will be able to bypass any team-wise restriction"
-              class="rounded border p-4"
-            />
+              class="rounded border p-4" />
           </div>
         </div>
       </div>
@@ -72,19 +56,9 @@
     <Dialog v-model="showRename" :options="renameDialogOptions">
       <template #body-content>
         <div class="space-y-2">
-          <FormControl
-            v-model="title"
-            label="Title"
-            placeholder="Product Experts"
-          />
-          <Button
-            label="Confirm"
-            theme="gray"
-            variant="solid"
-            class="w-full"
-            :disabled="title === teamId"
-            @click="renameTeam"
-          />
+          <FormControl v-model="title" label="Title" placeholder="Product Experts" />
+          <Button label="Confirm" theme="gray" variant="solid" class="w-full" :disabled="title === teamId"
+            @click="renameTeam" />
         </div>
       </template>
     </Dialog>
@@ -95,33 +69,20 @@
           <div v-if="agentStore.agents.data.length === 0">
             <p class="text-base text-gray-600">
               No agents found, please add
-              <span
-                class="cursor-pointer underline"
-                @click="router.push('/agents')"
-                >agents</span
-              >
+              <span class="cursor-pointer underline" @click="router.push('/agents')">agents</span>
               in the system.
             </p>
           </div>
-          <div
-            v-for="agent in agentStore.agents.data"
-            v-else
-            :key="agent.name"
-            class="flex items-center justify-between"
-          >
+          <div v-for="agent in agentStore.agents.data" v-else :key="agent.name"
+            class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <Avatar :label="agent.agent_name" :image="agent.user_image" />
               <div class="text-base">
                 {{ agent.agent_name }}
               </div>
             </div>
-            <Button
-              :disabled="!!team.doc?.users.find((u) => u.user === agent.user)"
-              label="Add"
-              theme="gray"
-              variant="outline"
-              @click="addMember(agent.user)"
-            />
+            <Button :disabled="!!team.doc?.users.find((u) => u.user === agent.user)" label="Add" theme="gray"
+              variant="outline" @click="addMember(agent.user)" />
           </div>
         </div>
       </template>
@@ -151,6 +112,14 @@ import IconMoreHorizontal from "~icons/lucide/more-horizontal";
 import IconPlus from "~icons/lucide/plus";
 import Pill from "@/components/Pill.vue";
 import LayoutHeader from "@/components/LayoutHeader.vue";
+import { useUserStore } from "@/stores/user";
+
+const { getUser } = useUserStore();
+
+const isManager = computed(() => {
+  const roles = getUser()["roles"]
+  return roles.includes("Support Manager") || roles.includes("Administrator")
+});
 
 const props = defineProps({
   teamId: {

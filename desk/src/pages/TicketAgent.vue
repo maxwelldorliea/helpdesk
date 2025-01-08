@@ -5,38 +5,24 @@
         <Breadcrumbs :items="breadcrumbs" class="breadcrumbs" />
       </template>
       <template #right-header>
-        <CustomActions
-          v-if="ticket.data._customActions"
-          :actions="ticket.data._customActions"
-        />
+        <CustomActions v-if="ticket.data._customActions" :actions="ticket.data._customActions" />
         <div v-if="ticket.data.assignees?.length">
           <component :is="ticket.data.assignees.length == 1 ? 'Button' : 'div'">
-            <MultipleAvatar
-              :avatars="ticket.data.assignees"
-              @click="showAssignmentModal = true"
-            />
+            <MultipleAvatar :avatars="ticket.data.assignees" @click="showAssignmentModal = true" />
           </component>
         </div>
-        <button
-          v-else
-          class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
-          @click="showAssignmentModal = true"
-        >
+        <button v-else class="rounded bg-gray-100 px-2 py-1.5 text-base text-gray-800"
+          @click="showAssignmentModal = true">
           Assign
         </button>
         <Dropdown :options="dropdownOptions">
           <template #default="{ open }">
             <Button :label="ticket.data.status">
               <template #prefix>
-                <IndicatorIcon
-                  :class="ticketStatusStore.textColorMap[ticket.data.status]"
-                />
+                <IndicatorIcon :class="ticketStatusStore.textColorMap[ticket.data.status]" />
               </template>
               <template #suffix>
-                <FeatherIcon
-                  :name="open ? 'chevron-up' : 'chevron-down'"
-                  class="h-4"
-                />
+                <FeatherIcon :name="open ? 'chevron-up' : 'chevron-down'" class="h-4" />
               </template>
             </Button>
           </template>
@@ -47,78 +33,38 @@
       <div class="flex flex-1 flex-col">
         <!-- ticket activities -->
         <div class="overflow-y-auto flex-1">
-          <Tabs
-            v-model="tabIndex"
-            v-slot="{ tab }"
-            :tabs="tabs"
-            class="!h-full"
-          >
-            <TicketAgentActivities
-              ref="ticketAgentActivitiesRef"
-              :activities="filterActivities(tab.name)"
-              :title="tab.label"
-              @update="
-                () => {
-                  ticket.reload();
-                }
-              "
-              @email:reply="
-                (e) => {
+          <Tabs v-model="tabIndex" v-slot="{ tab }" :tabs="tabs" class="!h-full">
+            <TicketAgentActivities ref="ticketAgentActivitiesRef" :activities="filterActivities(tab.name)"
+              :title="tab.label" @update="() => {
+                ticket.reload();
+              }
+                " @email:reply="(e) => {
                   communicationAreaRef.replyToEmail(e);
                 }
-              "
-            />
+                  " />
           </Tabs>
         </div>
-        <CommunicationArea
-          ref="communicationAreaRef"
-          v-model="ticket.data"
-          :to-emails="[ticket.data?.raised_by]"
-          :cc-emails="[]"
-          :bcc-emails="[]"
-          @update="
-            () => {
-              ticket.reload();
-              ticketAgentActivitiesRef.scrollToLatestActivity();
-            }
-          "
-        />
+        <CommunicationArea ref="communicationAreaRef" v-model="ticket.data" :to-emails="[ticket.data?.raised_by]"
+          :cc-emails="[]" :bcc-emails="[]" @update="() => {
+            ticket.reload();
+            ticketAgentActivitiesRef.scrollToLatestActivity();
+          }
+            " />
       </div>
-      <TicketAgentSidebar
-        :ticket="ticket.data"
-        @update="({ field, value }) => updateTicket(field, value)"
-        @email:open="(e) => communicationAreaRef.toggleEmailBox()"
-      />
+      <TicketAgentSidebar :ticket="ticket.data" @update="({ field, value }) => updateTicket(field, value)"
+        @email:open="(e) => communicationAreaRef.toggleEmailBox()" />
     </div>
-    <AssignmentModal
-      v-if="ticket.data"
-      v-model="showAssignmentModal"
-      :assignees="ticket.data.assignees"
-      :docname="ticketId"
-      doctype="HD Ticket"
-      @update="
-        () => {
-          ticket.reload();
-        }
-      "
-    />
+    <AssignmentModal v-if="ticket.data" v-model="showAssignmentModal" :assignees="ticket.data.assignees"
+      :docname="ticketId" doctype="HD Ticket" @update="() => {
+        ticket.reload();
+      }
+        " />
     <!-- Rename Subject Dialog -->
     <Dialog v-model="showSubjectDialog" :options="{ title: 'Rename Subject' }">
       <template #body-content>
         <div class="flex flex-col flex-1 gap-3">
-          <FormControl
-            v-model="renameSubject"
-            type="textarea"
-            size="sm"
-            variant="subtle"
-            :disabled="false"
-          />
-          <Button
-            variant="solid"
-            :loading="isLoading"
-            label="Rename"
-            @click="handleRename"
-          />
+          <FormControl v-model="renameSubject" type="textarea" size="sm" variant="subtle" :disabled="false" />
+          <Button variant="solid" :loading="isLoading" label="Rename" @click="handleRename" />
         </div>
       </template>
     </Dialog>
@@ -148,7 +94,7 @@ import {
   IndicatorIcon,
   CommentIcon,
   ActivityIcon,
-  EmailIcon,
+  WhatsAppIcon,
 } from "@/components/icons";
 import { socket } from "@/socket";
 import { useTicketStatusStore } from "@/stores/ticketStatus";
@@ -251,8 +197,8 @@ const tabs: TabObject[] = [
   },
   {
     name: "email",
-    label: "Emails",
-    icon: EmailIcon,
+    label: "WhatsApp",
+    icon: WhatsAppIcon,
   },
   {
     name: "comment",
@@ -398,6 +344,7 @@ onUnmounted(() => {
 <style>
 .breadcrumbs button {
   background-color: inherit !important;
+
   &:hover,
   &:focus {
     background-color: inherit !important;

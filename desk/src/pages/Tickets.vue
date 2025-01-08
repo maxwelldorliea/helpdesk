@@ -5,9 +5,10 @@
         <Breadcrumbs :items="breadcrumbs" />
       </template>
       <template #right-header>
-        <RouterLink
-          :to="{ name: isCustomerPortal ? 'TicketNew' : 'TicketAgentNew' }"
-        >
+        <RouterLink :to="{
+          name: isCustomerPortal ? 'TicketNew' :
+            'TicketAgentNew'
+        }" v-if="isManager">
           <Button label="Create" theme="gray" variant="solid">
             <template #prefix>
               <LucidePlus class="h-4 w-4" />
@@ -16,36 +17,20 @@
         </RouterLink>
       </template>
     </LayoutHeader>
-    <ViewControls
-      :filter="{ filters: filters, filterableFields: filterableFields.data }"
-      :sort="{ sorts: sorts, sortableFields: sortableFields.data }"
-      :column="{
+    <ViewControls :filter="{ filters: filters, filterableFields: filterableFields.data }"
+      :sort="{ sorts: sorts, sortableFields: sortableFields.data }" :column="{
         fields: fields,
         columns: columns,
-      }"
-      :is-customer-portal="isCustomerPortal"
-      @event:sort="processSorts"
-      @event:filter="processFilters"
-      @event:column="processColumns"
-      @event:reload="apply()"
-    />
-    <TicketsAgentList
-      :rows="tickets?.data?.data || []"
-      :columns="columns"
-      :page-length="pageLength"
-      :col-field-type="colFieldType"
-      :options="{
+      }" :is-customer-portal="isCustomerPortal" @event:sort="processSorts" @event:filter="processFilters"
+      @event:column="processColumns" @event:reload="apply()" />
+    <TicketsAgentList :rows="tickets?.data?.data || []" :columns="columns" :page-length="pageLength"
+      :col-field-type="colFieldType" :options="{
         rowCount: tickets?.data?.row_count,
         totalCount: tickets?.data?.total_count,
-      }"
-      @update:page-length="updatePageLength"
-      @event:field-click="processFieldClick"
-      @event:export="
-        (e) => {
-          exportRows(e.export_type, e.export_all, e.selections);
-        }
-      "
-    />
+      }" @update:page-length="updatePageLength" @event:field-click="processFieldClick" @event:export="(e) => {
+        exportRows(e.export_type, e.export_all, e.selections);
+      }
+        " />
   </div>
 </template>
 
@@ -59,6 +44,7 @@ import { useUserStore } from "@/stores/user";
 import { useRoute } from "vue-router";
 import { socket } from "@/socket";
 const { getUser } = useUserStore();
+
 
 const route = useRoute();
 const isCustomerPortal: boolean = route.meta.public ?? false;
@@ -142,6 +128,11 @@ const fields = computed(() => {
   return tickets?.data?.fields.filter((field) => {
     return colFieldType.value[field.value] == undefined;
   });
+});
+
+const isManager = computed(() => {
+  const roles = getUser()["roles"]
+  return roles.includes("Support Manager") || roles.includes("Administrator")
 });
 
 const colFieldType = computed(() => {

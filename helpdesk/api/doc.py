@@ -172,7 +172,7 @@ def get_list_data(
 
     rows.append("name") if "name" not in rows else rows
     d = []
-    if doctype == "HD Ticket":
+    if hasattr(list, "get_list_filters"):
         query = frappe.qb.get_query(
             table=doctype,
             fields=rows,

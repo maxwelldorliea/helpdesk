@@ -32,6 +32,7 @@ def get_user():
     username = user.username
 
     return {
+        "roles": frappe.get_roles(current_user),
         "has_desk_access": has_desk_access,
         "is_admin": is_admin,
         "is_agent": is_agent,

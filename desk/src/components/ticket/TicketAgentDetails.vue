@@ -1,23 +1,13 @@
 <template>
   <div class="flex flex-col gap-3 border-b px-6 py-3">
-    <div
-      v-for="s in sections"
-      :key="s.label"
-      class="flex items-center text-base leading-5"
-    >
+    <div v-for="s in sections" :key="s.label" class="flex items-center text-base leading-5">
       <Tooltip :text="s.label">
         <div class="w-[126px] text-sm text-gray-600">{{ s.label }}</div>
       </Tooltip>
       <div class="flex items-center justify-between">
         <div v-if="s.value">{{ s.value }}</div>
         <Tooltip :text="s.tooltipValue">
-          <Badge
-            v-if="s.badgeText"
-            class="-ml-1"
-            :label="s.badgeText"
-            variant="subtle"
-            :theme="s.badgeColor"
-          />
+          <Badge v-if="s.badgeText" class="-ml-1" :label="s.badgeText" variant="subtle" :theme="s.badgeColor" />
         </Tooltip>
       </div>
     </div>
@@ -131,7 +121,7 @@ const sections = computed(() => [
   },
   {
     label: "Source",
-    value: props.source,
+    value: "WhatsApp",
   },
 ]);
 </script>

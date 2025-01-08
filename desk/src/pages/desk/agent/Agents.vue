@@ -5,12 +5,8 @@
         <div class="text-lg font-medium text-gray-900">Agents</div>
       </template>
       <template #right-header>
-        <Button
-          label="New agent"
-          theme="gray"
-          variant="solid"
-          @click="isDialogVisible = !isDialogVisible"
-        >
+        <Button label="New agent" theme="gray" variant="solid" @click="isDialogVisible = !isDialogVisible"
+          v-if="isManager">
           <template #prefix>
             <LucidePlus class="h-4 w-4" />
           </template>
@@ -18,14 +14,8 @@
       </template>
     </LayoutHeader>
 
-    <ListViewBuilder
-      :options="options"
-      @empty-state-action="isDialogVisible = true"
-    />
-    <AddNewAgentsDialog
-      :show="isDialogVisible"
-      @close="isDialogVisible = false"
-    />
+    <ListViewBuilder :options="options" @empty-state-action="isDialogVisible = true" />
+    <AddNewAgentsDialog :show="isDialogVisible" @close="isDialogVisible = false" />
   </div>
 </template>
 <script setup lang="ts">
@@ -33,11 +23,17 @@ import { computed, ref, h } from "vue";
 import { usePageMeta, Avatar } from "frappe-ui";
 import AddNewAgentsDialog from "@/components/desk/global/AddNewAgentsDialog.vue";
 import { LayoutHeader, ListViewBuilder } from "@/components";
+import { useUserStore } from "@/stores/user";
+const { getUser } = useUserStore();
 
 const isDialogVisible = ref(false);
 
 // filter not on first field/ datetime
 // options mei route or click ka option
+const isManager = computed(() => {
+  const roles = getUser()["roles"]
+  return roles.includes("Support Manager") || roles.includes("Administrator")
+});
 const options = computed(() => {
   return {
     doctype: "HD Agent",
