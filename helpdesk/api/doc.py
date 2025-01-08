@@ -171,15 +171,27 @@ def get_list_data(
             rows.append(column.get("key"))
 
     rows.append("name") if "name" not in rows else rows
-    data = (
-        frappe.get_list(
+    d = []
+    if doctype == "HD Ticket":
+        query = frappe.qb.get_query(
+            table=doctype,
+            fields=rows,
+            filters=filters,
+            limit=page_length,
+            order_by=order_by,
+        )
+        d = list.get_list_filters(query).run(as_dict=True)
+    else:
+        d = frappe.get_list(
             doctype,
             fields=rows,
             filters=filters,
             order_by=order_by,
             page_length=page_length,
         )
-        or []
+
+    data = (
+        d or []
     )
 
     fields = frappe.get_meta(doctype).fields
