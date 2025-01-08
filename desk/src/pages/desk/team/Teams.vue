@@ -5,7 +5,7 @@
         <div class="text-lg font-medium text-gray-900">Teams</div>
       </template>
       <template #right-header>
-        <Button label="New team" theme="gray" variant="solid" @click="showNewDialog = !showNewDialog" iconLeft="plus" ,
+        <Button label="New team" theme="gray" variant="solid" @click="showNewDialog = !showNewDialog" iconLeft="plus"
           v-if="isManager" />
       </template>
     </LayoutHeader>
